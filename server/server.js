@@ -4,16 +4,15 @@ const cors = require("cors");
 
 const app = express();
 
-// 🔥 IMPORTANT: Fix CORS for Netlify frontend
+// 🔥 Allow Netlify frontend to connect
 app.use(cors({
   origin: "*",
   methods: ["GET", "POST", "PUT", "DELETE"],
-  credentials: true
 }));
 
 app.use(express.json());
 
-// 🔥 MongoDB (USE ENV VARIABLE - NOT localhost)
+// 🔥 Use MongoDB Atlas (NOT localhost)
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("✅ MongoDB Connected Successfully"))
   .catch((err) => console.log("❌ MongoDB Error:", err));
@@ -22,7 +21,7 @@ mongoose.connect(process.env.MONGO_URI)
 const authRoutes = require("./routes/authRoutes");
 app.use("/api/auth", authRoutes);
 
-// 🔥 ADD THIS (Your Render is missing this route)
+// 🔥 VERY IMPORTANT (This is missing in your deployed backend)
 app.get("/", (req, res) => {
   res.send("Backend API is running 🚀");
 });

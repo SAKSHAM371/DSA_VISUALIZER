@@ -2,7 +2,8 @@ import React, { useState } from "react";
 
 const Register = ({ setIsLoggedIn }) => {
   // 🔥 IMPORTANT: Put your Render backend URL here
-  const API_BASE_URL = "https://dsa-visualizer-backend.onrender.com";
+ const API_BASE_URL = "https://dsa-visualizer-jaye.onrender.com";
+
 
 
   const [formData, setFormData] = useState({
