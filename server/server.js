@@ -4,28 +4,30 @@ const cors = require("cors");
 
 const app = express();
 
-// Middleware
-app.use(cors());
+// 🔥 FIXED CORS (FOR NETLIFY)
+app.use(cors({
+  origin: "*",
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true
+}));
+
 app.use(express.json());
 
-// MongoDB Connection (FIXED)
-mongoose
-  .connect(process.env.MONGO_URI) // use env variable for deployment
-  .then(() => console.log("✅ MongoDB Connected Successfully"))
+// MongoDB Connection (USE ENV VARIABLE - NOT localhost)
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => console.log("✅ MongoDB Connected"))
   .catch((err) => console.log("❌ MongoDB Error:", err));
 
-// 🔐 Auth Routes
+// Routes
 const authRoutes = require("./routes/authRoutes");
 app.use("/api/auth", authRoutes);
 
-// Test Route (Health Check)
+// 🔥 HEALTH CHECK ROUTE (VERY IMPORTANT)
 app.get("/", (req, res) => {
   res.send("Backend API is running 🚀");
 });
 
-// PORT FIX (IMPORTANT for Render)
 const PORT = process.env.PORT || 5000;
-
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });
