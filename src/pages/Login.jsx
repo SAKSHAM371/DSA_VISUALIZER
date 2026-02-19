@@ -10,42 +10,59 @@ const Login = ({ setIsLoggedIn }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  // 🔥 IMPORTANT: Replace with your Render backend URL
+ const API_BASE_URL = "https://dsa-visualizer-backend.onrender.com";
+
+
   const handleRegister = async () => {
-    if (!name || !email || !password) { setError("Please fill all fields."); return; }
-    setLoading(true); setError("");
+    if (!name || !email || !password) { 
+      setError("Please fill all fields."); 
+      return; 
+    }
+    setLoading(true); 
+    setError("");
     try {
-      const res = await fetch("http://localhost:5000/api/auth/register", {
+      const res = await fetch(`${API_BASE_URL}/api/auth/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email, password }),
       });
+
       const data = await res.json();
+
       if (res.ok) {
         setError("");
-        setName(""); setEmail(""); setPassword("");
+        setName(""); 
+        setEmail(""); 
+        setPassword("");
         setIsRegister(false);
-        // show success
         alert("Registered successfully! Please log in.");
       } else {
         setError(data.msg || "Registration failed.");
       }
-    } catch {
-      setError("Cannot connect to server. Is the backend running on port 5000?");
+    } catch (err) {
+      setError("Cannot connect to server. Please try again later.");
     } finally {
       setLoading(false);
     }
   };
 
   const handleLogin = async () => {
-    if (!email || !password) { setError("Enter email and password."); return; }
-    setLoading(true); setError("");
+    if (!email || !password) { 
+      setError("Enter email and password."); 
+      return; 
+    }
+    setLoading(true); 
+    setError("");
     try {
-      const res = await fetch("http://localhost:5000/api/auth/login", {
+      const res = await fetch(`${API_BASE_URL}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
+
       const data = await res.json();
+
       if (res.ok) {
         localStorage.setItem("isLoggedIn", "true");
         localStorage.setItem("user", JSON.stringify(data.user));
@@ -54,8 +71,8 @@ const Login = ({ setIsLoggedIn }) => {
       } else {
         setError(data.msg || "Invalid email or password.");
       }
-    } catch {
-      setError("Cannot connect to server. Is the backend running on port 5000?");
+    } catch (err) {
+      setError("Cannot connect to server. Please try again later.");
     } finally {
       setLoading(false);
     }
@@ -68,7 +85,6 @@ const Login = ({ setIsLoggedIn }) => {
   return (
     <div className="login-page">
 
-      {/* Background bars */}
       <div className="login-bg-bars" aria-hidden="true">
         {[60, 40, 80, 30, 70, 50, 90, 45, 65, 35, 75, 55].map((h, i) => (
           <div key={i} className="bg-bar" style={{ height: `${h}%`, animationDelay: `${i * 0.15}s` }} />
@@ -76,23 +92,27 @@ const Login = ({ setIsLoggedIn }) => {
       </div>
 
       <div className="login-box">
-        {/* Logo */}
         <div className="login-logo">
           <span className="login-logo-icon">⬛</span>
           <span className="login-logo-text">DSA<span>Viz</span></span>
         </div>
 
         <h2 className="login-heading">{isRegister ? "Create Account" : "Welcome Back"}</h2>
-        <p className="login-sub">{isRegister ? "Join and start visualizing algorithms" : "Sign in to continue"}</p>
+        <p className="login-sub">
+          {isRegister ? "Join and start visualizing algorithms" : "Sign in to continue"}
+        </p>
 
         <div className="login-form">
           {isRegister && (
             <div className="field-group">
               <label>Full Name</label>
               <input
-                type="text" placeholder="John Doe"
-                value={name} onChange={(e) => setName(e.target.value)}
-                onKeyDown={handleKey} className="login-input"
+                type="text"
+                placeholder="John Doe"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                onKeyDown={handleKey}
+                className="login-input"
               />
             </div>
           )}
@@ -100,18 +120,24 @@ const Login = ({ setIsLoggedIn }) => {
           <div className="field-group">
             <label>Email</label>
             <input
-              type="email" placeholder="you@example.com"
-              value={email} onChange={(e) => setEmail(e.target.value)}
-              onKeyDown={handleKey} className="login-input"
+              type="email"
+              placeholder="you@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              onKeyDown={handleKey}
+              className="login-input"
             />
           </div>
 
           <div className="field-group">
             <label>Password</label>
             <input
-              type="password" placeholder="••••••••"
-              value={password} onChange={(e) => setPassword(e.target.value)}
-              onKeyDown={handleKey} className="login-input"
+              type="password"
+              placeholder="••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              onKeyDown={handleKey}
+              className="login-input"
             />
           </div>
 

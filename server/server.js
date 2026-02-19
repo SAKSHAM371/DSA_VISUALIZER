@@ -8,22 +8,24 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// MongoDB Connection
+// MongoDB Connection (FIXED)
 mongoose
-  .connect("mongodb://127.0.0.1:27017/dsa_visualizer")
+  .connect(process.env.MONGO_URI) // use env variable for deployment
   .then(() => console.log("✅ MongoDB Connected Successfully"))
   .catch((err) => console.log("❌ MongoDB Error:", err));
 
-// 🔐 Auth Routes (NEW)
+// 🔐 Auth Routes
 const authRoutes = require("./routes/authRoutes");
 app.use("/api/auth", authRoutes);
 
-// Test Route
+// Test Route (Health Check)
 app.get("/", (req, res) => {
   res.send("Backend API is running 🚀");
 });
 
-const PORT = 5000;
+// PORT FIX (IMPORTANT for Render)
+const PORT = process.env.PORT || 5000;
+
 app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
+  console.log(`🚀 Server running on port ${PORT}`);
 });

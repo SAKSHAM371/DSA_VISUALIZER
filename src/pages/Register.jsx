@@ -1,6 +1,10 @@
 import React, { useState } from "react";
 
 const Register = ({ setIsLoggedIn }) => {
+  // 🔥 IMPORTANT: Put your Render backend URL here
+  const API_BASE_URL = "https://dsa-visualizer-backend.onrender.com";
+
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -17,38 +21,38 @@ const Register = ({ setIsLoggedIn }) => {
   };
 
   const handleRegister = async (e) => {
-  e.preventDefault();
- console.log("Register button clicked");
-  console.log("Form Data:", formData); // DEBUG
+    e.preventDefault();
 
-  try {
-    const res = await fetch("http://localhost:5000/api/auth/register", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        name: formData.name,
-        email: formData.email,
-        password: formData.password,
-      }),
-    });
+    console.log("Register button clicked");
+    console.log("Form Data:", formData);
 
-    const data = await res.json();
-    console.log("Server Response:", data); // DEBUG
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/auth/register`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          password: formData.password,
+        }),
+      });
 
-    if (res.ok) {
-      setMessage("✅ Registered Successfully!");
-      setFormData({ name: "", email: "", password: "" });
-    } else {
-      setMessage(data.msg || "Registration Failed");
+      const data = await res.json();
+      console.log("Server Response:", data);
+
+      if (res.ok) {
+        setMessage("✅ Registered Successfully!");
+        setFormData({ name: "", email: "", password: "" });
+      } else {
+        setMessage(data.msg || "Registration Failed");
+      }
+    } catch (error) {
+      console.error("Register Error:", error);
+      setMessage("❌ Cannot connect to server. Please try again later.");
     }
-  } catch (error) {
-    console.error("Register Error:", error);
-    setMessage("❌ Server Error");
-  }
-};
-
+  };
 
   return (
     <div className="auth-container">
