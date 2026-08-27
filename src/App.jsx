@@ -1,26 +1,41 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState } from "react";
+
 import { Routes, Route, Navigate } from "react-router-dom";
+
 import "./index.css";
+
 import VisualizerPage from "./pages/VisualizerPage";
 import Login from "./pages/Login";
 import DashboardHome from "./pages/DashboardHome";
-import { linearSearch, binarySearch } from "./algorithms/sorting";
-
-
 
 import {
-  mergeSort, quickSort, radixSort, insertionSort, sleep,
-  heapSort, shellSort, countingSort, bucketSort,
+  linearSearch,
+  binarySearch,
+  mergeSort,
+  quickSort,
+  radixSort,
+  insertionSort,
+  sleep,
+  heapSort,
+  shellSort,
+  countingSort,
+  bucketSort,
 } from "./algorithms/sorting";
+
 import { bubbleSort } from "./algorithms/bubbleSort";
 import { selectionSort } from "./algorithms/selectionSort";
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  // Login state is restored immediately when the app loads
+  const [isLoggedIn, setIsLoggedIn] = useState(
+    () => localStorage.getItem("isLoggedIn") === "true"
+  );
+
   const [array, setArray] = useState([]);
   const [algorithm, setAlgorithm] = useState("bubble");
   const [size, setSize] = useState(30);
   const [speed, setSpeed] = useState(60);
+
   const [isSorting, setIsSorting] = useState(false);
   const [comparingIndices, setComparingIndices] = useState([]);
   const [sortedIndices, setSortedIndices] = useState([]);
@@ -28,117 +43,178 @@ function App() {
 
   const stopRef = useRef(false);
 
-  useEffect(() => {
-    const saved = localStorage.getItem("isLoggedIn");
-    if (saved === "true") setIsLoggedIn(true);
-  }, []);
-
+  // STOP
   const stopAlgorithm = () => {
     stopRef.current = true;
     setIsSorting(false);
     setComparingIndices([]);
   };
 
+  // RESET
   const restartVisualization = () => {
     if (isSorting) return;
     if (originalArray.length === 0) return;
+
     setArray([...originalArray]);
     setSortedIndices([]);
     setComparingIndices([]);
   };
 
- const startAlgorithm = async (algo, target = null) => {
-  if (isSorting) return;
+  // START ALGORITHM
+  const startAlgorithm = async (algo, target = null) => {
+    if (isSorting) return;
 
-  stopRef.current = false;
-  setIsSorting(true);
-  setSortedIndices([]);
-  setComparingIndices([]);
+    stopRef.current = false;
 
-  try {
-    switch (algo) {
-      // 🔽 SORTING ALGORITHMS
-      case "bubble":
-        await bubbleSort(array, setArray, speed, stopRef, setComparingIndices, setSortedIndices);
-        break;
+    setIsSorting(true);
+    setSortedIndices([]);
+    setComparingIndices([]);
 
-      case "selection":
-        await selectionSort(array, setArray, speed, stopRef, setComparingIndices, setSortedIndices);
-        break;
+    try {
+      switch (algo) {
+        // SORTING ALGORITHMS
 
-      case "insertion":
-        await insertionSort(array, setArray, speed, stopRef, setComparingIndices, setSortedIndices);
-        break;
-
-      case "merge":
-        await mergeSort(array, setArray, speed, stopRef, setComparingIndices, setSortedIndices);
-        break;
-
-      case "quick":
-        await quickSort(array, setArray, speed, stopRef, setComparingIndices, setSortedIndices);
-        break;
-
-      case "radix":
-        await radixSort(array, setArray, speed, stopRef);
-        break;
-
-      case "heap":
-        await heapSort(array, setArray, speed, stopRef, setComparingIndices, setSortedIndices);
-        break;
-
-      // 🔍 SEARCHING ALGORITHMS (IMPORTANT PART)
-      case "linear":
-        if (target === null || isNaN(target)) {
-          alert("Please enter a value to search!");
+        case "bubble":
+          await bubbleSort(
+            array,
+            setArray,
+            speed,
+            stopRef,
+            setComparingIndices,
+            setSortedIndices
+          );
           break;
-        }
-        await linearSearch(
-          array,
-          target,
-          setArray,
-          speed,
-          stopRef,
-          setComparingIndices,
-          setSortedIndices
-        );
-        break;
 
-      case "binary":
-        if (target === null || isNaN(target)) {
-          alert("Please enter a value to search!");
+        case "selection":
+          await selectionSort(
+            array,
+            setArray,
+            speed,
+            stopRef,
+            setComparingIndices,
+            setSortedIndices
+          );
           break;
-        }
-        await binarySearch(
-          array,
-          target,
-          setArray,
-          speed,
-          stopRef,
-          setComparingIndices,
-          setSortedIndices
-        );
-        break;
 
-      default:
-        console.error("Unknown algorithm:", algo);
+        case "insertion":
+          await insertionSort(
+            array,
+            setArray,
+            speed,
+            stopRef,
+            setComparingIndices,
+            setSortedIndices
+          );
+          break;
+
+        case "merge":
+          await mergeSort(
+            array,
+            setArray,
+            speed,
+            stopRef,
+            setComparingIndices,
+            setSortedIndices
+          );
+          break;
+
+        case "quick":
+          await quickSort(
+            array,
+            setArray,
+            speed,
+            stopRef,
+            setComparingIndices,
+            setSortedIndices
+          );
+          break;
+
+        case "radix":
+          await radixSort(
+            array,
+            setArray,
+            speed,
+            stopRef
+          );
+          break;
+
+        case "heap":
+          await heapSort(
+            array,
+            setArray,
+            speed,
+            stopRef,
+            setComparingIndices,
+            setSortedIndices
+          );
+          break;
+
+        // SEARCHING ALGORITHMS
+
+        case "linear":
+          if (target === null || isNaN(target)) {
+            alert("Please enter a value to search!");
+            break;
+          }
+
+          await linearSearch(
+            array,
+            target,
+            setArray,
+            speed,
+            stopRef,
+            setComparingIndices,
+            setSortedIndices
+          );
+          break;
+
+        case "binary":
+          if (target === null || isNaN(target)) {
+            alert("Please enter a value to search!");
+            break;
+          }
+
+          await binarySearch(
+            array,
+            target,
+            setArray,
+            speed,
+            stopRef,
+            setComparingIndices,
+            setSortedIndices
+          );
+          break;
+
+        default:
+          console.error("Unknown algorithm:", algo);
+      }
+    } catch (err) {
+      console.error("Algorithm error:", err);
     }
-  } catch (err) {
-    console.error(err);
-  }
 
-  setIsSorting(false);
-};
+    setIsSorting(false);
+  };
 
-
+  // PROTECTED ROUTE
   const ProtectedRoute = ({ children }) => {
-    if (!isLoggedIn) return <Navigate to="/" />;
+    if (!isLoggedIn) {
+      return <Navigate to="/" replace />;
+    }
+
     return children;
   };
 
   return (
     <Routes>
-      <Route path="/" element={<Login setIsLoggedIn={setIsLoggedIn} />} />
+      {/* LOGIN */}
+      <Route
+        path="/"
+        element={
+          <Login setIsLoggedIn={setIsLoggedIn} />
+        }
+      />
 
+      {/* DASHBOARD */}
       <Route
         path="/dashboard"
         element={
@@ -148,6 +224,7 @@ function App() {
         }
       />
 
+      {/* VISUALIZER */}
       <Route
         path="/visualizer/:type"
         element={
@@ -172,7 +249,11 @@ function App() {
         }
       />
 
-      <Route path="*" element={<Navigate to="/" />} />
+      {/* UNKNOWN ROUTES */}
+      <Route
+        path="*"
+        element={<Navigate to="/" replace />}
+      />
     </Routes>
   );
 }
