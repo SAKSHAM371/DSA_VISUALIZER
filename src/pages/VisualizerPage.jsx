@@ -43,22 +43,25 @@ function VisualizerPage({
 
   const isSearchAlgo = type === "linear" || type === "binary";
 
+  // ✅ FIXED: Properly generates and sets new array
   const generateArray = useCallback(
     (len = size) => {
       if (isSorting) return;
+
       const newArr = Array.from({ length: len }, () =>
         Math.floor(Math.random() * 90) + 10
       );
-      // setArray(newArr);
+
+      setArray(newArr); // 🔥 THIS WAS MISSING (main bug)
     },
     [size, isSorting, setArray]
   );
 
+  // ✅ FIXED: Proper dependency (no eslint disable needed)
   useEffect(() => {
     if (!type) return;
     generateArray(size);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [type]);
+  }, [type, size, generateArray]);
 
   const handleInsertArray = () => {
     if (isSorting) stopAlgorithm();
@@ -79,18 +82,24 @@ function VisualizerPage({
     setInputArray("");
   };
 
-const handleStart = () => {
-  if (isSearchAlgo) {
-    if (target === "" || isNaN(Number(target))) {
-      alert("Please enter a valid number to search");
-      return;
+  const handleStart = () => {
+    if (isSearchAlgo) {
+      if (target === "" || isNaN(Number(target))) {
+        alert("Please enter a valid number to search");
+        return;
+      }
+      startAlgorithm(type, Number(target));
+    } else {
+      startAlgorithm(type);
     }
-    startAlgorithm(type, Number(target)); // ✔ correct
-  } else {
-    startAlgorithm(type);
-  }
-};
+  };
 
+  // ✅ Better Reset: also regenerate clean array if parent reset is weak
+  const handleReset = () => {
+    if (isSorting) return;
+    restartVisualization?.();
+    generateArray(size); // ensures visual reset always works
+  };
 
   const handleCopyCode = () => {
     const code = codeData[type]?.[activeLanguage] || "";
@@ -114,7 +123,6 @@ const handleStart = () => {
 
   return (
     <div className="viz-page">
-
       {/* TOP NAV */}
       <div className="viz-topnav">
         <div className="viz-topnav-left">
@@ -131,10 +139,8 @@ const handleStart = () => {
       </div>
 
       <div className="viz-body">
-
         {/* LEFT PANEL */}
         <div className="viz-left">
-
           <div className="viz-card">
             <p className="viz-description">
               {ALGO_DESCRIPTIONS[type] || "Visualize this algorithm step by step."}
@@ -161,7 +167,7 @@ const handleStart = () => {
             </div>
           </div>
 
-          {/* 🔍 SEARCH INPUT (ONLY FOR SEARCH ALGOS) */}
+          {/* Search Input */}
           {isSearchAlgo && (
             <div className="viz-input-row">
               <input
@@ -200,7 +206,7 @@ const handleStart = () => {
             </button>
             <button
               className="viz-btn restart"
-              onClick={restartVisualization}
+              onClick={handleReset}
               disabled={isSorting}
             >
               ↩ Reset
@@ -210,7 +216,9 @@ const handleStart = () => {
           {/* Sliders */}
           <div className="viz-sliders">
             <div className="slider-row">
-              <label className="slider-label">Array Size <em>{size}</em></label>
+              <label className="slider-label">
+                Array Size <em>{size}</em>
+              </label>
               <input
                 type="range"
                 min="5"
@@ -226,7 +234,9 @@ const handleStart = () => {
             </div>
 
             <div className="slider-row">
-              <label className="slider-label">Speed <em>{speed}ms</em></label>
+              <label className="slider-label">
+                Speed <em>{speed}ms</em>
+              </label>
               <input
                 type="range"
                 min="10"
@@ -257,9 +267,15 @@ const handleStart = () => {
           </div>
 
           <div className="viz-legend">
-            <span className="legend-item"><span className="dot blue" />Unsorted</span>
-            <span className="legend-item"><span className="dot orange" />Comparing</span>
-            <span className="legend-item"><span className="dot green" />Sorted</span>
+            <span className="legend-item">
+              <span className="dot blue" />Unsorted
+            </span>
+            <span className="legend-item">
+              <span className="dot orange" />Comparing
+            </span>
+            <span className="legend-item">
+              <span className="dot green" />Sorted
+            </span>
           </div>
         </div>
 
@@ -279,7 +295,11 @@ const handleStart = () => {
                   <div
                     key={i}
                     className={`viz-bar ${
-                      isSorted ? "sorted" : isComparing ? "comparing" : "normal"
+                      isSorted
+                        ? "sorted"
+                        : isComparing
+                        ? "comparing"
+                        : "normal"
                     }`}
                     style={{ height: `${(val / maxVal) * 88}%` }}
                     title={val}
@@ -297,10 +317,16 @@ const handleStart = () => {
                 {["cpp", "java", "python"].map((lang) => (
                   <button
                     key={lang}
-                    className={`lang-tab ${activeLanguage === lang ? "active" : ""}`}
+                    className={`lang-tab ${
+                      activeLanguage === lang ? "active" : ""
+                    }`}
                     onClick={() => setActiveLanguage(lang)}
                   >
-                    {lang === "cpp" ? "C++" : lang === "java" ? "Java" : "Python"}
+                    {lang === "cpp"
+                      ? "C++"
+                      : lang === "java"
+                      ? "Java"
+                      : "Python"}
                   </button>
                 ))}
                 <button className="copy-btn" onClick={handleCopyCode}>
@@ -309,7 +335,8 @@ const handleStart = () => {
               </div>
             </div>
             <pre className="code-block">
-              {code[activeLanguage] || "// Code not available for this algorithm"}
+              {code[activeLanguage] ||
+                "// Code not available for this algorithm"}
             </pre>
           </div>
         </div>

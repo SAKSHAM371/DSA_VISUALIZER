@@ -1,29 +1,35 @@
+require("dotenv").config(); // line 1
+
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
-
+import mongoose from "mongoose";
 const app = express();
 
-// 🔥 Allow Netlify frontend to connect
 app.use(cors({
   origin: "*",
   methods: ["GET", "POST", "PUT", "DELETE"],
 }));
 
 app.use(express.json());
-
-// 🔥 Use MongoDB Atlas (NOT localhost)
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log("✅ MongoDB Connected Successfully"))
-  .catch((err) => console.log("❌ MongoDB Error:", err));
-
+console.log("MONGO URI VALUE:", process.env.MONGO_URI);
+// 🔥 MongoDB Connection
+mongoose
+  .connect(process.env.MONGO_URI)
+  .then(() => console.log("✅ MongoDB Connected"))
+  .catch((err) => console.error("❌ MongoDB Error:", err));
 // Routes
 const authRoutes = require("./routes/authRoutes");
 app.use("/api/auth", authRoutes);
 
-// 🔥 VERY IMPORTANT (This is missing in your deployed backend)
+// Test Route
 app.get("/", (req, res) => {
   res.send("Backend API is running 🚀");
+});
+app.get("/api/health", (req, res) => {
+    res.status(200).json({
+        status: "online"
+    });
 });
 
 const PORT = process.env.PORT || 5000;
