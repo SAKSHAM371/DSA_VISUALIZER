@@ -1,21 +1,41 @@
 import { sleep } from "./sorting";
 
-export  const bubbleSort = async (array, setArray, speed, stopRef) => {
+export const bubbleSort = async (
+  array,
+  setArray,
+  speed,
+  stopRef,
+  setComparingIndices,
+  setSortedIndices
+) => {
   const a = [...array];
 
-  for (let i = 0; i < a.length; i++) {
-    if (stopRef?.current) return;
+  for (let i = 0; i < a.length - 1; i++) {
+    if (stopRef.current) return;
 
-    let minIdx = i;
-    for (let j = i + 1; j < a.length; j++) {
-      if (stopRef?.current) return;
-      if (a[j] < a[minIdx]) minIdx = j;
-    }
+    for (let j = 0; j < a.length - i - 1; j++) {
+      if (stopRef.current) return;
 
-    if (minIdx !== i) {
-      [a[i], a[minIdx]] = [a[minIdx], a[i]];
-      setArray([...a]);
+      setComparingIndices?.([j, j + 1]);
+
       await sleep(speed);
+
+      if (a[j] > a[j + 1]) {
+        [a[j], a[j + 1]] = [a[j + 1], a[j]];
+
+        setArray([...a]);
+
+        await sleep(speed);
+      }
+
+      setComparingIndices?.([]);
     }
+
+    setSortedIndices?.(
+      Array.from({ length: i + 1 }, (_, k) => a.length - 1 - k)
+    );
   }
+
+  setComparingIndices?.([]);
+  setSortedIndices?.(Array.from({ length: a.length }, (_, i) => i));
 };

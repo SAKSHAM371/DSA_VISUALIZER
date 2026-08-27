@@ -12,7 +12,7 @@ import {
   mergeSort, quickSort, radixSort, insertionSort, sleep,
   heapSort, shellSort, countingSort, bucketSort,
 } from "./algorithms/sorting";
-import { bubbleSort as bubbleSortAlgo } from "./algorithms/bubbleSort";
+import { bubbleSort } from "./algorithms/bubbleSort";
 import { selectionSort } from "./algorithms/selectionSort";
 
 function App() {

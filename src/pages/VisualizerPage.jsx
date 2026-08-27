@@ -36,7 +36,7 @@ function VisualizerPage({
 }) {
   const { type } = useParams();
   const navigate = useNavigate();
-  const [inputArray, setInputArray] = useState("");
+  // const [inputArray, setInputArray] = useState("");
   const [activeLanguage, setActiveLanguage] = useState("cpp");
   const [copyMsg, setCopyMsg] = useState("");
   const [target, setTarget] = useState("");
@@ -44,43 +44,40 @@ function VisualizerPage({
   const isSearchAlgo = type === "linear" || type === "binary";
 
   // ✅ FIXED: Properly generates and sets new array
-  const generateArray = useCallback(
-    (len = size) => {
-      if (isSorting) return;
+const generateArray = (len = size) => {
+  if (isSorting) return;
 
-      const newArr = Array.from({ length: len }, () =>
-        Math.floor(Math.random() * 90) + 10
-      );
-
-      setArray(newArr); // 🔥 THIS WAS MISSING (main bug)
-    },
-    [size, isSorting, setArray]
+  const newArr = Array.from({ length: len }, () =>
+    Math.floor(Math.random() * 90) + 10
   );
 
+  setArray(newArr);
+};
+
   // ✅ FIXED: Proper dependency (no eslint disable needed)
-  useEffect(() => {
-    if (!type) return;
-    generateArray(size);
-  }, [type, size, generateArray]);
+//  useEffect(() => {
+//   if (!type) return;
+//   generateArray(size);
+// }, [type, size]);
 
-  const handleInsertArray = () => {
-    if (isSorting) stopAlgorithm();
-    if (!inputArray.trim()) return;
+  // const handleInsertArray = () => {
+  //   if (isSorting) stopAlgorithm();
+  //   if (!inputArray.trim()) return;
 
-    const parsed = inputArray
-      .split(",")
-      .map((n) => parseInt(n.trim()))
-      .filter((n) => !isNaN(n) && n > 0);
+  //   const parsed = inputArray
+  //     .split(",")
+  //     .map((n) => parseInt(n.trim()))
+  //     .filter((n) => !isNaN(n) && n > 0);
 
-    if (parsed.length === 0) {
-      alert("Enter valid positive numbers like: 5,3,8,1");
-      return;
-    }
+  //   if (parsed.length === 0) {
+  //     alert("Enter valid positive numbers like: 5,3,8,1");
+  //     return;
+  //   }
 
-    setSize(parsed.length);
-    setArray(parsed);
-    setInputArray("");
-  };
+  //   setSize(parsed.length);
+  //   setArray(parsed);
+  //   setInputArray("");
+  // };
 
   const handleStart = () => {
     if (isSearchAlgo) {
@@ -248,7 +245,7 @@ function VisualizerPage({
           </div>
 
           {/* Custom Array Input */}
-          <div className="viz-input-row">
+          {/* <div className="viz-input-row">
             <input
               type="text"
               className="viz-input"
@@ -264,7 +261,7 @@ function VisualizerPage({
             >
               Insert
             </button>
-          </div>
+          </div> */}
 
           <div className="viz-legend">
             <span className="legend-item">
