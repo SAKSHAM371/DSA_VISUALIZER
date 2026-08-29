@@ -31,7 +31,9 @@ function App() {
     () => localStorage.getItem("isLoggedIn") === "true"
   );
 
-  const [array, setArray] = useState([]);
+ const [array, setArray] = useState(
+  Array.from({ length: 30 }, () => Math.floor(Math.random() * 400) + 20)
+);
   const [algorithm, setAlgorithm] = useState("bubble");
   const [size, setSize] = useState(30);
   const [speed, setSpeed] = useState(60);
@@ -39,7 +41,9 @@ function App() {
   const [isSorting, setIsSorting] = useState(false);
   const [comparingIndices, setComparingIndices] = useState([]);
   const [sortedIndices, setSortedIndices] = useState([]);
-  const [originalArray, setOriginalArray] = useState([]);
+ const [originalArray, setOriginalArray] = useState(
+  Array.from({ length: 30 }, () => Math.floor(Math.random() * 400) + 20)
+);
 
   const stopRef = useRef(false);
 
