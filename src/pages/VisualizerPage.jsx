@@ -3,19 +3,59 @@ import { useState, useEffect, useCallback } from "react";
 import algorithmComplexity from "../data/algorithmComplexity";
 import { codeData } from "../data/algorithmCode";
 
-const ALGO_DESCRIPTIONS = {
-  bubble:    "Repeatedly swaps adjacent elements that are in the wrong order. Simple but O(n²) — great for learning.",
-  selection: "Finds the minimum element each pass and places it at the front. Always O(n²) comparisons.",
-  insertion: "Builds sorted array one item at a time. Efficient for small or nearly-sorted arrays.",
-  merge:     "Divides, sorts, and merges. Guaranteed O(n log n) — stable and reliable.",
-  quick:     "Partitions around a pivot. Very fast in practice with average O(n log n).",
-  radix:     "Digit-by-digit sort. Linear time O(nk) — no comparisons needed.",
-  heap:      "Uses a max-heap structure. Guaranteed O(n log n) with O(1) space.",
-  shell:     "Generalization of insertion sort using gap sequences. Faster for medium datasets.",
-  counting:  "Counts element frequencies. O(n+k) — blazing fast for integer ranges.",
-  bucket:    "Distributes elements into buckets, sorts each. Great for uniformly distributed data.",
-  linear:    "Checks each element one by one. O(n) — works on unsorted arrays.",
-  binary:    "Divide and conquer search. O(log n) — requires sorted array.",
+const ALGO_INFO = {
+  bubble: {
+    description: "Bubble Sort is the simplest sorting algorithm that works by repeatedly swapping adjacent elements if they are in the wrong order. It is easy to understand but not efficient for large data sets because its average and worst-case time complexity are quite high.",
+    points: [
+      "Sorts the array using multiple passes. After the first pass, the maximum element moves to the end, which is its correct position.",
+      "In every pass, we process only those elements that have not yet moved to their correct position.",
+      "Adjacent elements are compared. If the larger element comes before the smaller element, they are swapped."
+    ]
+  },
+  selection: {
+    description: "Selection Sort divides the array into sorted and unsorted portions. In every pass, it finds the smallest element from the unsorted portion and places it at the beginning.",
+    points: ["Find the minimum element from the unsorted portion.","Swap it with the first element of the unsorted portion.","After every pass, one more element reaches its correct position."]
+  },
+  insertion: {
+    description: "Insertion Sort builds the sorted array one element at a time. It takes an element from the unsorted portion and inserts it into its correct position in the sorted portion.",
+    points: ["Start with the first element as the sorted portion.","Pick the next element and compare it with elements on its left.","Shift larger elements to the right and insert the selected element at its correct position."]
+  },
+  merge: {
+    description: "Merge Sort is a divide-and-conquer sorting algorithm. It repeatedly divides the array into smaller parts, sorts them, and then merges the sorted parts.",
+    points: ["Divide the array into two halves.","Recursively sort both halves.","Merge the two sorted halves to produce the final sorted array."]
+  },
+  quick: {
+    description: "Quick Sort is a divide-and-conquer algorithm that uses a pivot to partition the array. Elements smaller than the pivot are placed on one side and larger elements on the other.",
+    points: ["Choose an element as the pivot.","Partition the array around the pivot.","Recursively apply the same process to the left and right portions."]
+  },
+  radix: {
+    description: "Radix Sort sorts numbers digit by digit instead of comparing elements directly. It processes digits from the least significant digit to the most significant digit.",
+    points: ["Start with the least significant digit.","Group elements according to their current digit.","Repeat the process for each digit until all numbers are sorted."]
+  },
+  heap: {
+    description: "Heap Sort uses a binary heap to repeatedly select the largest or smallest element. It provides consistent O(n log n) time complexity.",
+    points: ["Build a max heap from the array.","Move the largest element to the end.","Reduce the heap size and repeat until the array is sorted."]
+  },
+  shell: {
+    description: "Shell Sort is an improved version of Insertion Sort that compares elements separated by a gap. The gap is gradually reduced until the array becomes sorted.",
+    points: ["Choose an initial gap.","Perform insertion-sort-like operations for elements separated by the gap.","Reduce the gap and repeat until the gap becomes 1."]
+  },
+  counting: {
+    description: "Counting Sort sorts integers by counting how many times each value occurs. It can be very efficient when the range of values is relatively small.",
+    points: ["Find the range of values in the array.","Count the frequency of each value.","Use the frequency information to rebuild the sorted array."]
+  },
+  bucket: {
+    description: "Bucket Sort distributes elements into multiple buckets and then sorts the elements inside each bucket before combining them.",
+    points: ["Create several buckets for different value ranges.","Place each element into its appropriate bucket.","Sort the buckets and combine them to form the final sorted array."]
+  },
+  linear: {
+    description: "Linear Search checks each element one by one until the target value is found or the end of the array is reached. It can work on both sorted and unsorted arrays.",
+    points: ["Start from the first element.","Compare each element with the target.","Stop when the target is found or all elements have been checked."]
+  },
+  binary: {
+    description: "Binary Search is an efficient searching algorithm that repeatedly divides a sorted array into two halves. It eliminates the half that cannot contain the target.",
+    points: ["Find the middle element of the sorted array.","If the middle element is the target, the search is complete.","Otherwise, continue searching in either the left or right half."]
+  }
 };
 
 function VisualizerPage({
@@ -139,9 +179,18 @@ const generateArray = (len = size) => {
         {/* LEFT PANEL */}
         <div className="viz-left">
           <div className="viz-card">
+            <h3 className="info-title">📖 About {formatTitle(type)}</h3>
             <p className="viz-description">
-              {ALGO_DESCRIPTIONS[type] || "Visualize this algorithm step by step."}
+              {ALGO_INFO[type]?.description ||
+                "Visualize this algorithm step by step."}
             </p>
+            {ALGO_INFO[type]?.points && (
+              <ul className="algo-points">
+                {ALGO_INFO[type].points.map((point, index) => (
+                  <li key={index}>{point}</li>
+                ))}
+              </ul>
+            )}
           </div>
 
           {/* Complexity */}
