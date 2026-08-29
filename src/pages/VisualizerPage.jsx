@@ -278,6 +278,13 @@ const generateArray = (len = size) => {
 
         {/* RIGHT PANEL */}
         <div className="viz-right">
+
+          {/* Current Array Display */}
+          <div className="array-display">
+            <strong>Array:</strong>{" "}
+            [{array.join(", ")}]
+          </div>
+
           <div className="viz-bars-wrap">
             {array.length === 0 ? (
               <div className="viz-empty">
@@ -289,18 +296,21 @@ const generateArray = (len = size) => {
                 const isSorted = sortedIndices?.includes(i);
                 const isComparing = comparingIndices?.includes(i);
                 return (
-                  <div
-                    key={i}
-                    className={`viz-bar ${
-                      isSorted
-                        ? "sorted"
-                        : isComparing
-                        ? "comparing"
-                        : "normal"
-                    }`}
-                    style={{ height: `${(val / maxVal) * 88}%` }}
-                    title={val}
-                  />
+                  <div className="bar-wrapper" key={i}>
+  <span className="bar-value">{val}</span>
+
+  <div
+    className={`viz-bar ${
+      isSorted
+        ? "sorted"
+        : isComparing
+        ? "comparing"
+        : "normal"
+    }`}
+    style={{ height: `${(val / maxVal) * 88}%` }}
+    title={val}
+  />
+</div>
                 );
               })
             )}
